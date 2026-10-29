@@ -30,8 +30,12 @@ result = agent.predict(
     {
         "department": {
             "type": "choice",
-            "instructions": "Who should handle this?",
-            "criteria": ["billing", "technical", "sales"],
+            "instructions": "Which department should handle this request?",
+            "criteria": {
+                "billing": "Payments, invoices, refunds, and duplicate charges.",
+                "technical": "Broken features, errors, and product troubleshooting.",
+                "sales": "Pricing, upgrades, and new purchases.",
+            },
         },
         "refund": {
             "type": "noul",
@@ -42,7 +46,7 @@ result = agent.predict(
 print(result["answers"]["department"]["choice"])  # billing
 ```
 
-首次加载会下载模型，之后的推理完全在本地进行。
+像上面这样给每个选项写上说明，效果远好于只给标签名。首次加载会下载模型，之后的推理完全在本地进行。
 
 ## 问题类型
 

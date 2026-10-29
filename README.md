@@ -31,8 +31,12 @@ result = agent.predict(
     {
         "department": {
             "type": "choice",
-            "instructions": "Who should handle this?",
-            "criteria": ["billing", "technical", "sales"],
+            "instructions": "Which department should handle this request?",
+            "criteria": {
+                "billing": "Payments, invoices, refunds, and duplicate charges.",
+                "technical": "Broken features, errors, and product troubleshooting.",
+                "sales": "Pricing, upgrades, and new purchases.",
+            },
         },
         "refund": {
             "type": "noul",
@@ -43,7 +47,8 @@ result = agent.predict(
 print(result["answers"]["department"]["choice"])  # billing
 ```
 
-The first load downloads the checkpoint; later inference is fully local.
+Describing each option, as above, works much better than bare labels. The first load
+downloads the checkpoint; later inference is fully local.
 
 ## Question types
 
