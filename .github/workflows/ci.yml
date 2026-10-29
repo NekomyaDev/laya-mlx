@@ -53,9 +53,18 @@ jobs:
       # in a separate process. Keep every upstream assertion and timeout unchanged.
       - name: Upstream host contracts
         run: pytest -q tests/test_official_host.py tests/test_official_contract.py
+      # Hosted macOS 26 runners intermittently SIGBUS inside MLX's native FP16 CPU kernels in the
+      # parallel-layout permutation test, depending on what earlier tests left in the process.
+      # A fresh process passes (see the diagnostic step), and real Apple hardware passes either
+      # way. Run that file in its own process; every assertion and tolerance is unchanged.
+      - name: Parallel-layout native tests
+        if: success() || failure()
+        run: python -X faulthandler -m pytest -q tests/test_parallel_layout.py
       - name: Native and integration tests
         if: success() || failure()
-        run: pytest -q --ignore=tests/test_official_contract.py --ignore=tests/test_official_host.py
+        run: >-
+          pytest -q --ignore=tests/test_official_contract.py --ignore=tests/test_official_host.py
+          --ignore=tests/test_parallel_layout.py
       - name: Compare original upstream idle-window assertions
         if: failure()
         run: PYTHONPATH=.upstream python -m pytest .upstream/tests/test_serve.py -q -k idle_window
@@ -68,7 +77,7 @@ jobs:
           python - <<'PYCODE'
           from pathlib import Path
           folder = Path.home() / "Library/Logs/DiagnosticReports"
-          for path in sorted(folder.glob("*Python*"))[-2:]:
+          for path in sorted(folder.glob("*.ips"), key=lambda p: p.stat().st_mtime)[-2:]:
               print(path.name)
               print(path.read_text()[:40000])
           PYCODE
