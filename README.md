@@ -43,6 +43,12 @@ Optional extras are `serve`, `mcp`, `structured`, `calibration`, `langchain`, `l
 PyTorch compile controls, ONNX execution and training remain explicit backend boundaries.
 Upstream's standalone HTTP SDK can target the HTTP service; it is a separate package.
 
+Batch grouping preserves Python question-ID and choice-label types as well as option order:
+integer `1` and string `"1"` remain distinct. With `hooks_concurrent=False`, a timed-out hook
+retains the serialization lock until it actually exits. `hooks_timeout` includes waiting for
+that lock; a hook whose wait expires is not invoked later. Already-running Python hooks cannot
+be interrupted and may still mutate their context after timeout.
+
 See [current migration evidence and validation limits](docs/MIGRATION_0_4_17.md).
 
 ## Quick start

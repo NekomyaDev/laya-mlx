@@ -57,6 +57,16 @@ does not import a backend; an already imported MLX cache is still cleared normal
 its native mean pooling implementation. Real construction and forward require
 MLX; no fake MLX module or numerical emulation is installed for tests.
 
+## Deliberate divergences from upstream
+
+These fix defects that upstream v0.4.17 still has. Each keeps upstream's public API and is pinned
+by its own regression tests.
+
+| Behavior | Upstream v0.4.17 | MLX | Tests |
+|---|---|---|---|
+| `Router.predict_batch` grouping | Schemas serialized with `json.dumps`, so key `1` and `"1"` (or `True` and `"true"`) share a group and later requests receive the first request's key types | Grouping signature keeps Python key types and insertion order; equal schemas still share a batch | `tests/test_batch_key_types.py` |
+| Serial hook timeout (`hooks_concurrent=False`) | The caller releases the lock when a hook times out while the hook is still running, so later serial hooks can overlap it | The worker holds the lock until the hook exits; `hooks_timeout` includes the lock wait, and a hook whose deadline passes while waiting is never invoked | `tests/test_hook_serialization.py` |
+
 ## Complete upstream file inventory
 
 | Upstream file | Port location | Scope |
