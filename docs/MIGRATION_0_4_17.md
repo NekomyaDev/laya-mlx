@@ -2,8 +2,10 @@
 
 The source target moves from upstream v0.4.12 (`ffc142012af63d015fa19f05f29f9c5ff329a2cc`)
 to v0.4.17 (`fe9a6c35023a7d94102e7feaaeaae8857d9d1b07`). The migration base is
-`ddaf014`. Package version remains **0.5.0**. This migration does not publish
-a package release.
+`ddaf014`. It ships in **0.6.0** ([changelog](../CHANGELOG.md)); the evidence below was
+recorded on the 0.5.0 source tree before the version bump. The 0.6.0 release re-ran the
+real-checkpoint validation: 63/63 fixtures for all three checkpoints in FP32 and FP16 against the
+v0.4.17 reference, with 100 stable calls each.
 
 All applicable Python changes in `git diff ffc1420..v0.4.17 -- laya` are accounted
 for below: 26 upstream files, 1,038 additions and 166 deletions. Twenty-four files
@@ -43,7 +45,7 @@ admission on a 408 body-read timeout, disables FastAPI documentation/schema rout
 when `LAYA_API_KEY` is set, and enforces its forward-token budget even with an
 explicit caller batch size. `LAYA_USER_AGENT` or `RemoteRouter(user_agent=...)`
 sets a validated Latin-1 remote header; the default uses the local package version,
-`laya/0.5.0`. Evaluation and CLI readers report the input artifact on malformed,
+for example `laya/0.6.0`. Evaluation and CLI readers report the input artifact on malformed,
 unreadable or excessively nested data. The native CLI accepts UTF-8 BOMs in both
 state and questions files, and reports parse/read errors before loading a model.
 
